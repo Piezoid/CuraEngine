@@ -693,6 +693,7 @@ void Infill::generateLinearBasedInfill(Polygons& result, const int line_distance
 
 void Infill::connectLines(Polygons& result_lines)
 {
+    std::set<InfillLineSegment*> live;
     UnionFind<InfillLineSegment*> connected_lines; //Keeps track of which lines are connected to which.
     for (std::vector<std::vector<InfillLineSegment*>>& crossings_on_polygon : crossings_on_line)
     {
@@ -703,10 +704,12 @@ void Infill::connectLines(Polygons& result_lines)
                 if (connected_lines.find(infill_line) == (size_t)-1)
                 {
                     connected_lines.add(infill_line); //Put every line in there as a separate set.
+                    live.insert(infill_line);
                 }
             }
         }
     }
+
 
     for (size_t polygon_index = 0; polygon_index < inner_contour.size(); polygon_index++)
     {
@@ -790,6 +793,7 @@ void Infill::connectLines(Polygons& result_lines)
                             previous_segment->next = new_segment;
                         }
                         new_segment->next = crossing;
+                        live.insert(new_segment);
                     }
 
                     if (crossing->start_segment == vertex_index && crossing->start_polygon == polygon_index)
@@ -824,6 +828,7 @@ void Infill::connectLines(Polygons& result_lines)
                         previous_segment->previous = new_segment;
                         new_segment->previous = previous_segment;
                         previous_segment = new_segment;
+                        live.insert(new_segment);
                     }
                 }
                 else
@@ -840,6 +845,7 @@ void Infill::connectLines(Polygons& result_lines)
                         previous_segment->next = new_segment;
                         new_segment->previous = previous_segment;
                         previous_segment = new_segment;
+                        live.insert(new_segment);
                     }
                 }
             }
@@ -875,6 +881,9 @@ void Infill::connectLines(Polygons& result_lines)
         previous_vertex =          (!current_infill_line->previous) ? current_infill_line->end : current_infill_line->start;
         current_infill_line = (first_vertex == current_infill_line->start) ? current_infill_line->next : current_infill_line->previous;
         result_lines.addLine(first_vertex, previous_vertex);
+        auto it = live.find(old_line);
+        assert(it != live.end());
+        live.erase(it);
         delete old_line;
         while (current_infill_line)
         {
@@ -883,11 +892,15 @@ void Infill::connectLines(Polygons& result_lines)
             current_infill_line =     (previous_vertex == current_infill_line->start) ? current_infill_line->next : current_infill_line->previous;
             result_lines.addLine(previous_vertex, next_vertex);
             previous_vertex = next_vertex;
+            auto it = live.find(old_line);
+            assert(it != live.end());
+            live.erase(it);
             delete old_line;
         }
 
         completed_groups.insert(group);
     }
+    assert(live.empty());
 }
 
 bool Infill::InfillLineSegment::operator ==(const InfillLineSegment& other) const
