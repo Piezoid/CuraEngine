@@ -434,6 +434,12 @@ protected:
             simple_poly = Polygon(*path.converted); //Restore the original. We have to output a vertex as the seam position, so there needs to be a vertex.
         }
 
+        // If simplification emptied the polygon (eg. short line), returns an arbitary point
+        if(simple_poly.empty())
+        {
+            return 0;
+        }
+
         // Paths, other than polygons, can be either clockwise or counterclockwise. Make sure this is detected.
         const bool clockwise = simple_poly.orientation();
 
