@@ -1429,7 +1429,7 @@ void SkeletalTrapezoidation::generateSegments()
         }
     }
     
-    std::sort(upward_quad_mids.begin(), upward_quad_mids.end(), [this](edge_t* a, edge_t* b)
+    std::sort(upward_quad_mids.begin(), upward_quad_mids.end(), [](edge_t* a, edge_t* b)
     {
         if (a->to->data.distance_to_boundary == b->to->data.distance_to_boundary)
         { // Ordering between two 'upward' edges of the same distance is important when one of the edges is flat and connected to the other

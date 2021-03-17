@@ -122,11 +122,11 @@ void LayerPlan::forceNewPathStart()
 }
 
 LayerPlan::LayerPlan(const SliceDataStorage& storage, LayerIndex layer_nr, coord_t z, coord_t layer_thickness, size_t start_extruder, const std::vector<FanSpeedLayerTimeSettings>& fan_speed_layer_time_settings_per_extruder, coord_t comb_boundary_offset, coord_t comb_move_inside_distance, coord_t travel_avoid_distance)
-: storage(storage)
-, configs_storage(storage, layer_nr, layer_thickness)
+: configs_storage(storage, layer_nr, layer_thickness)
 , z(z)
 , final_travel_z(z)
 , mode_skip_agressive_merge(false)
+, storage(storage)
 , layer_nr(layer_nr)
 , is_initial_layer(layer_nr == 0 - static_cast<LayerIndex>(Raft::getTotalExtraLayers()))
 , is_raft_layer(layer_nr < 0 - static_cast<LayerIndex>(Raft::getFillerLayerCount()))
@@ -935,8 +935,6 @@ void LayerPlan::addWall(const LineJunctions& wall, int start_idx, const Settings
 
     if (wall.size() >= 2)
     {
-        const ExtrusionJunction& p1 = wall[start_idx];
-
         if (!bridge_wall_mask.empty())
         {
             computeDistanceToBridgeStart((start_idx + wall.size() - 1) % wall.size());

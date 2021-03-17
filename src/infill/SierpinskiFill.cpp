@@ -731,7 +731,7 @@ Polygon SierpinskiFill::generateCross(coord_t z, coord_t min_dist_to_side, coord
 
     Polygon ret;
 
-    std::function<Point (int, Edge)> get_edge_crossing_location = [&ret, z, min_dist_to_side](int depth, Edge e)
+    std::function<Point (int, Edge)> get_edge_crossing_location = [z, min_dist_to_side](int depth, Edge e)
     {
         coord_t period =  8 << (14 - depth / 2);
         coord_t from_l = z % (period * 2);
