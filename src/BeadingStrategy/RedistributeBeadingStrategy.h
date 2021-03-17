@@ -42,7 +42,7 @@ namespace cura
                                     const double minimum_variable_line_width,
                                     BeadingStrategy* parent);
 
-        virtual ~RedistributeBeadingStrategy() = default;
+        virtual ~RedistributeBeadingStrategy() override = default;
 
         Beading compute(coord_t thickness, coord_t bead_count) const override;
 

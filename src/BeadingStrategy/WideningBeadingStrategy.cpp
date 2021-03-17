@@ -14,14 +14,6 @@ WideningBeadingStrategy::WideningBeadingStrategy(BeadingStrategy* parent, const 
 {
 }
 
-WideningBeadingStrategy::~WideningBeadingStrategy()
-{
-    if (parent)
-    {
-        delete parent;
-    }
-}
-
 std::string WideningBeadingStrategy::toString() const
 {
     return std::string("Widening+") + parent->toString();

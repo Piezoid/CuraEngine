@@ -28,7 +28,7 @@ coord_t getWeightedAverage(const coord_t preferred_bead_width_outer, const coord
     return preferred_bead_width_outer;
 }
 
-BeadingStrategy* BeadingStrategyFactory::makeStrategy
+std::unique_ptr<BeadingStrategy> BeadingStrategyFactory::makeStrategy
 (
     const StrategyType type,
     const coord_t preferred_bead_width_outer,
@@ -83,6 +83,6 @@ BeadingStrategy* BeadingStrategyFactory::makeStrategy
         logDebug("Applying the OuterWallOffset meta-strategy with offset = %d.", outer_wall_offset);
         ret = new OuterWallInsetBeadingStrategy(outer_wall_offset, ret);
     }
-    return ret;
+    return std::unique_ptr<BeadingStrategy>{ret};
 }
 } // namespace cura

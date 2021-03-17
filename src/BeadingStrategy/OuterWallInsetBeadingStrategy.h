@@ -28,7 +28,7 @@ namespace cura
         virtual std::string toString() const;
         
     private:
-        BeadingStrategy* parent;
+        std::unique_ptr<BeadingStrategy> parent;
         coord_t outer_wall_offset;
     };
 } // namespace cura
