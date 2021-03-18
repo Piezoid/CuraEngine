@@ -617,10 +617,14 @@ void SupportLayer::excludeAreasFromSupportInfillAreas(const Polygons& exclude_po
         // the rest we add to the support_infill_parts (but after part_count_to_check)
         support_infill_part.outline = smaller_support_islands[0];
 
+        // Adding parts will invalidate the support_infill_part reference, save these:
+        size_t support_line_width = support_infill_part.support_line_width;
+        int inset_count_to_generate = support_infill_part.inset_count_to_generate;
+
         for (size_t support_island_idx = 1; support_island_idx < smaller_support_islands.size(); ++support_island_idx)
         {
             const PolygonsPart& smaller_island = smaller_support_islands[support_island_idx];
-            support_infill_parts.emplace_back(smaller_island, support_infill_part.support_line_width, support_infill_part.inset_count_to_generate);
+            support_infill_parts.emplace_back(smaller_island, support_line_width, inset_count_to_generate);
         }
     }
 
