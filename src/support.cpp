@@ -423,7 +423,10 @@ void AreaSupport::cleanup(SliceDataStorage& storage)
             }
             if (can_be_removed)
             {
-                part = std::move(layer.support_infill_parts.back());
+                if(&part != &layer.support_infill_parts.back())
+                {
+                    part = std::move(layer.support_infill_parts.back());
+                }
                 layer.support_infill_parts.pop_back();
                 part_idx--;
             }
