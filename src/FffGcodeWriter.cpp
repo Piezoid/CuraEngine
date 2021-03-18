@@ -2126,7 +2126,14 @@ bool FffGcodeWriter::processSkinPart(const SliceDataStorage& storage, LayerPlan&
     processRoofing(storage, gcode_layer, mesh, extruder_nr, mesh_config, skin_part, added_something);
 
     // add normal skinfill
-    processTopBottom(storage, gcode_layer, mesh, extruder_nr, mesh_config, skin_part, added_something);
+    bool do_empty_skin_fill = true;
+    if (do_empty_skin_fill || !skin_part.skin_fill.empty())
+    {
+        bool top_added_something = false;
+        processTopBottom(storage, gcode_layer, mesh, extruder_nr, mesh_config, skin_part, top_added_something);
+        assert(!skin_part.skin_fill.empty() || !top_added_something); // empty -> top_added_something
+        added_something |= top_added_something;
+    }
 
     gcode_layer.mode_skip_agressive_merge = false;
     return added_something;
@@ -2202,6 +2209,9 @@ void FffGcodeWriter::processTopBottom(const SliceDataStorage& storage, LayerPlan
 
     auto handle_bridge_skin = [&](const int bridge_layer, const GCodePathConfig* config, const float density) // bridge_layer = 1, 2 or 3
     {
+        if (skin_part.skin_fill.empty()) {
+            return false;
+        }
         if (support_layer_nr >= (bridge_layer - 1))
         {
             support_layer = &storage.support.supportLayers[support_layer_nr - (bridge_layer - 1)];
@@ -2342,6 +2352,7 @@ void FffGcodeWriter::processSkinPrintFeature(const SliceDataStorage& storage, La
         connected_zigzags, use_endpieces, skip_some_zags, zag_skip_count, pocket_size
         );
     infill_comp.generate(skin_paths, skin_polygons, skin_lines, mesh.settings);
+    assert(!area.empty() || (skin_polygons.empty() && skin_lines.empty() && skin_paths.empty())); // area.empty -> all empty
 
     // add paths
     if(!skin_polygons.empty() || !skin_lines.empty() || !skin_paths.empty())
