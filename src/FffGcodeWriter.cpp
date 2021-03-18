@@ -2126,7 +2126,10 @@ bool FffGcodeWriter::processSkinPart(const SliceDataStorage& storage, LayerPlan&
     processRoofing(storage, gcode_layer, mesh, extruder_nr, mesh_config, skin_part, added_something);
 
     // add normal skinfill
-    processTopBottom(storage, gcode_layer, mesh, extruder_nr, mesh_config, skin_part, added_something);
+    if (!skin_part.skin_fill.empty())
+    {
+        processTopBottom(storage, gcode_layer, mesh, extruder_nr, mesh_config, skin_part, added_something);
+    }
 
     gcode_layer.mode_skip_agressive_merge = false;
     return added_something;
