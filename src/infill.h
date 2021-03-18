@@ -24,6 +24,7 @@ class Infill
 
     EFillMethod pattern; //!< the space filling pattern of the infill to generate
     bool zig_zaggify; //!< Whether to connect the end pieces of the support lines via the wall
+    bool connect_lines; //!< Whether the zig_zaggification uses the connectLines algorithm
     bool connect_polygons; //!< Whether to connect as much polygons together into a single path
     Polygons outer_contour; //!< The area that originally needs to be filled with infill. The input of the algorithm.
     Polygons inner_contour; //!< The part of the contour that will get filled with an infill pattern. Equals outer_contour minus the extra infill walls.
@@ -70,6 +71,7 @@ public:
     )
     : pattern(pattern)
     , zig_zaggify(zig_zaggify)
+    , connect_lines(zig_zaggify && (pattern == EFillMethod::LINES || pattern == EFillMethod::TRIANGLES || pattern == EFillMethod::GRID || pattern == EFillMethod::CUBIC || pattern == EFillMethod::TETRAHEDRAL || pattern == EFillMethod::QUARTER_CUBIC || pattern == EFillMethod::TRIHEXAGON))
     , connect_polygons(connect_polygons)
     , outer_contour(in_outline)
     , infill_line_width(infill_line_width)
