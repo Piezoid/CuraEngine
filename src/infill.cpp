@@ -476,17 +476,20 @@ void Infill::addLineInfill(Polygons& result, const PointMatrix& rotation_matrix,
             break;
         }
         std::vector<coord_t>& crossings = cut_list[scanline_idx];
-        qsort(crossings.data(), crossings.size(), sizeof(coord_t), compare_coord_t);
-        for(unsigned int crossing_idx = 0; crossing_idx + 1 < crossings.size(); crossing_idx += 2)
+        if(!crossings.empty())
         {
-            if (crossings[crossing_idx + 1] - crossings[crossing_idx] < infill_line_width / 5)
-            { // segment is too short to create infill
-                continue;
-            }
-            //We have to create our own lines when they are not created by the method connectLines.
-            if (!connect_lines)
+            qsort(crossings.data(), crossings.size(), sizeof(coord_t), compare_coord_t);
+            for(unsigned int crossing_idx = 0; crossing_idx + 1 < crossings.size(); crossing_idx += 2)
             {
-                result.addLine(rotation_matrix.unapply(Point(x, crossings[crossing_idx])), rotation_matrix.unapply(Point(x, crossings[crossing_idx + 1])));
+                if (crossings[crossing_idx + 1] - crossings[crossing_idx] < infill_line_width / 5)
+                { // segment is too short to create infill
+                    continue;
+                }
+                //We have to create our own lines when they are not created by the method connectLines.
+                if (!connect_lines)
+                {
+                    result.addLine(rotation_matrix.unapply(Point(x, crossings[crossing_idx])), rotation_matrix.unapply(Point(x, crossings[crossing_idx + 1])));
+                }
             }
         }
         scanline_idx += 1;
