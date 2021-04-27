@@ -15,7 +15,10 @@ const int vertex_meld_distance = MM2INT(0.03);
  */
 static inline uint32_t pointHash(const Point3& p)
 {
-    return ((p.x + vertex_meld_distance/2) / vertex_meld_distance) ^ (((p.y + vertex_meld_distance/2) / vertex_meld_distance) << 10) ^ (((p.z + vertex_meld_distance/2) / vertex_meld_distance) << 20);
+    auto hash_coord_t = [](coord_t p) {
+        return (uint32_t(p) + vertex_meld_distance / 2) / vertex_meld_distance;
+    };
+    return hash_coord_t(p.x) ^ hash_coord_t(p.y) ^ hash_coord_t(p.z);
 }
 
 Mesh::Mesh(Settings& parent)

@@ -1,5 +1,8 @@
 //Copyright (c) 2020 Ultimaker B.V.
 //CuraEngine is released under the terms of the AGPLv3 or higher.
+#include <debug/macros.h>
+#undef __glibcxx_check_self_move_assign
+#define __glibcxx_check_self_move_assign(x)
 
 #include "polygon.h"
 
@@ -613,22 +616,23 @@ void Polygons::removeSmallAreas(const double min_area_size, const bool remove_ho
     auto new_end = paths.end();
     if(remove_holes)
     {
-        for(auto it = paths.begin(); it < new_end; it++)
+        for(auto it = paths.begin(); it < new_end; )
         {
             // All polygons smaller than target are removed by replacing them with a polygon from the back of the vector
             if(fabs(INT2MM2(ClipperLib::Area(*it))) < min_area_size)
             {
                 new_end--;
                 *it = std::move(*new_end);
-                it--; // wind back the iterator such that the polygon just swaped in is checked next
+                continue; // don't increment the iterator such that the polygon just swaped in is checked next
             }
+            it++;
         }
     }
     else
     {
         // For each polygon, computes the signed area, move small outlines at the end of the vector and keep references on small holes
         std::vector<PolygonRef> small_holes;
-        for(auto it = paths.begin(); it < new_end; it++) {
+        for(auto it = paths.begin(); it < new_end; ) {
             double area = INT2MM2(ClipperLib::Area(*it));
             if (fabs(area) < min_area_size)
             {
@@ -637,7 +641,7 @@ void Polygons::removeSmallAreas(const double min_area_size, const bool remove_ho
                     new_end--;
                     if(it < new_end) {
                         std::swap(*new_end, *it);
-                        it--;
+                        continue;
                     }
                     else
                     { // Don't self-swap the last Path
@@ -649,6 +653,7 @@ void Polygons::removeSmallAreas(const double min_area_size, const bool remove_ho
                     small_holes.push_back(*it);
                 }
             }
+            it++;
         }
 
         // Removes small holes that have their first point inside one of the removed outlines

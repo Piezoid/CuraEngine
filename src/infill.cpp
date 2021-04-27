@@ -151,6 +151,7 @@ void Infill::generate(VariableWidthPaths& toolpaths, Polygons& result_polygons, 
         //So make sure we provide it with a Polygons that is safe to clear and only add stuff to result_lines.
         Polygons generated_result_polygons;
         Polygons generated_result_lines;
+        assert(this != nullptr);
         _generate(toolpaths, generated_result_polygons, generated_result_lines, settings, cross_fill_provider, mesh);
         result_polygons.add(generated_result_polygons);
         result_lines.add(generated_result_lines);
