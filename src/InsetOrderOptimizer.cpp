@@ -153,8 +153,10 @@ size_t InsetOrderOptimizer::getOuterRegionId(const VariableWidthPaths& toolpaths
     // Then, the largest of these will be the one that's needed for the outer region, the others' all belong to hole regions:
     AABB outer_bbox;
     size_t outer_region_id = 0; // Region-ID 0 is reserved for 'None'.
+    size_t max_region_id = 0;
     for (const auto& region_id_bbox_pair : region_ids_to_bboxes)
     {
+        max_region_id = std::max(max_region_id, region_id_bbox_pair.first);
         if (region_id_bbox_pair.second.contains(outer_bbox))
         {
             outer_bbox = region_id_bbox_pair.second;
@@ -162,7 +164,8 @@ size_t InsetOrderOptimizer::getOuterRegionId(const VariableWidthPaths& toolpaths
         }
     }
 
-    out_number_of_regions = region_ids_to_bboxes.size();
+    assert(max_region_id >= region_ids_to_bboxes.size());
+    out_number_of_regions = max_region_id;
     return outer_region_id;
 }
 
