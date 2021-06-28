@@ -2,6 +2,7 @@
 // CuraEngine is released under the terms of the AGPLv3 or higher.
 #include <numeric>
 #include "DistributedBeadingStrategy.h"
+#include <cassert>
 
 namespace cura
 {
@@ -34,6 +35,7 @@ DistributedBeadingStrategy::Beading DistributedBeadingStrategy::compute(coord_t 
     ret.total_thickness = thickness;
     if (bead_count > 2)
     {
+        assert(thickness / bead_count >= 0);
         const coord_t to_be_divided = thickness - bead_count * optimal_width;
         const float middle = static_cast<float>(bead_count - 1) / 2;
 

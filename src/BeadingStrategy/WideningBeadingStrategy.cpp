@@ -2,6 +2,7 @@
 //CuraEngine is released under the terms of the AGPLv3 or higher.
 
 #include "WideningBeadingStrategy.h"
+#include <cassert>
 
 namespace cura
 {
@@ -27,6 +28,7 @@ WideningBeadingStrategy::Beading WideningBeadingStrategy::compute(coord_t thickn
         ret.total_thickness = thickness;
         if (thickness >= min_input_width)
         {
+            assert(std::max(thickness, min_output_width)>=0);
             ret.bead_widths.emplace_back(std::max(thickness, min_output_width));
             ret.toolpath_locations.emplace_back(thickness / 2);
         }

@@ -2,6 +2,7 @@
 //CuraEngine is released under the terms of the AGPLv3 or higher.
 
 #include "ExtrusionJunction.h"
+#include <cassert>
 
 namespace cura
 {
@@ -18,6 +19,8 @@ ExtrusionJunction::ExtrusionJunction(const Point p, const coord_t w, const coord
       w(w),
       perimeter_index(perimeter_index),
       region_id(region_id)
-{}
+{
+    assert(w >= 0);
+}
 
 }

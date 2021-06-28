@@ -2,6 +2,7 @@
 //CuraEngine is released under the terms of the AGPLv3 or higher.
 
 #include "RedistributeBeadingStrategy.h"
+#include <cassert>
 
 #include <algorithm>
 #include <numeric>
@@ -73,6 +74,7 @@ BeadingStrategy::Beading RedistributeBeadingStrategy::compute(coord_t thickness,
         ret = parent->compute(virtual_thickness, virtual_bead_count);
 
         // Insert the outer beads
+        assert(outer_bead_width>=0);
         ret.bead_widths.insert(ret.bead_widths.begin(), outer_bead_width);
         ret.bead_widths.emplace_back(outer_bead_width);
     }

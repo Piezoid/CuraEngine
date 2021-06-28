@@ -1,6 +1,7 @@
 // Copyright (c) 2021 Ultimaker B.V.
 // CuraEngine is released under the terms of the AGPLv3 or higher.
 #include <algorithm>
+#include <cassert>
 
 #include "CenterDeviationBeadingStrategy.h"
 
@@ -29,6 +30,9 @@ CenterDeviationBeadingStrategy::Beading CenterDeviationBeadingStrategy::compute(
         const coord_t optimal_thickness = getOptimalThickness(bead_count);
         const coord_t diff_thickness = (thickness - optimal_thickness) / 2;
         const coord_t inner_bead_widths = optimal_width + diff_thickness;
+        assert(thickness > 0);
+        assert(optimal_thickness > 0);
+        assert(inner_bead_widths >= 0);
         const size_t center_bead_idx = ret.bead_widths.size() / 2;
         if (bead_count % 2 == 0) // Even lines
         {

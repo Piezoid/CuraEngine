@@ -66,6 +66,7 @@ LimitedBeadingStrategy::Beading LimitedBeadingStrategy::compute(coord_t thicknes
     if (bead_count % 2 == 1)
     {
         ret.toolpath_locations[bead_count / 2] = thickness / 2;
+        assert(thickness - optimal_thickness>=0);
         ret.bead_widths[bead_count / 2] = thickness - optimal_thickness;
     }
     for (coord_t bead_idx = 0; bead_idx < (bead_count + 1) / 2; bead_idx++)
