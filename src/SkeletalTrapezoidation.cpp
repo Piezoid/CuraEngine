@@ -469,7 +469,12 @@ void SkeletalTrapezoidation::separatePointyQuadEndNodes()
             node_t* new_node = &graph.nodes.back();
             new_node->incident_edge = quad_start;
             quad_start->from = new_node;
-            quad_start->twin->to = new_node;
+            if(quad_start->twin != nullptr) {
+                quad_start->twin->to = new_node;
+            }
+            else {
+                RUN_ONCE(logWarning("Encountered a quad start edge without twin."));
+            }
         }
     }
 }

@@ -258,6 +258,7 @@ void SkeletalTrapezoidationGraph::collapseSmallEdges(coord_t snap_dist)
             if(!quad_mid->twin)
             {
                 RUN_ONCE(logWarning("Encountered quad edge without a twin."));
+                edge_it++;
                 continue; //Prevent accessing unallocated memory.
             }
             int count = 0;
@@ -308,6 +309,14 @@ void SkeletalTrapezoidationGraph::collapseSmallEdges(coord_t snap_dist)
         //  o o
         if ( should_collapse(quad_start->from, quad_end->to) && should_collapse(quad_start->to, quad_end->from))
         { // Collapse start and end edges and remove whole cell
+            assert(quad_start->twin && quad_end->twin);
+            if(!quad_start->twin || !quad_end->twin) {
+                RUN_ONCE(logWarning("Encountered quad edge without a twin."));
+                if (!edge_it_is_updated) {
+                    edge_it++;
+                }
+                continue; //Prevent accessing unallocated memory.
+            }
 
             quad_start->twin->to = quad_end->to;
             quad_end->to->incident_edge = quad_end->twin;
