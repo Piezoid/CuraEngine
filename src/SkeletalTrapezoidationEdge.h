@@ -124,9 +124,11 @@ public:
     {
         extrusion_junctions = storage;
     }
-    std::shared_ptr<LineJunctions> getExtrusionJunctions()
+    std::shared_ptr<LineJunctions> getExtrusionJunctions(bool allow_null = false)
     {
-        return extrusion_junctions.lock();
+        auto ptr = extrusion_junctions.lock();
+        assert(allow_null || ptr.get() != nullptr);
+        return ptr;
     }
 
 private:

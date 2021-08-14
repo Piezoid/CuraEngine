@@ -1938,13 +1938,15 @@ void SkeletalTrapezoidation::connectJunctions(ptr_vector_t<LineJunctions>& edge_
             LineJunctions to_junctions = *edge_from_peak->twin->data.getExtrusionJunctions();
             if (edge_to_peak->prev)
             {
-                LineJunctions from_prev_junctions = *edge_to_peak->prev->data.getExtrusionJunctions();
-                while (!from_junctions.empty() && !from_prev_junctions.empty() && from_junctions.back().perimeter_index <= from_prev_junctions.front().perimeter_index)
-                {
-                    from_junctions.pop_back();
+                auto from_prev_junctions = edge_to_peak->prev->data.getExtrusionJunctions(true);
+                if(from_prev_junctions && !from_prev_junctions->empty()) {
+                    while (!from_junctions.empty() && from_junctions.back().perimeter_index <= from_prev_junctions->front().perimeter_index)
+                    {
+                        from_junctions.pop_back();
+                    }
+                    from_junctions.reserve(from_junctions.size() + from_prev_junctions->size());
+                    from_junctions.insert(from_junctions.end(), from_prev_junctions->begin(), from_prev_junctions->end());
                 }
-                from_junctions.reserve(from_junctions.size() + from_prev_junctions.size());
-                from_junctions.insert(from_junctions.end(), from_prev_junctions.begin(), from_prev_junctions.end());
                 assert(!edge_to_peak->prev->prev);
                 if(edge_to_peak->prev->prev)
                 {
@@ -1953,13 +1955,15 @@ void SkeletalTrapezoidation::connectJunctions(ptr_vector_t<LineJunctions>& edge_
             }
             if (edge_from_peak->next)
             {
-                LineJunctions to_next_junctions = *edge_from_peak->next->twin->data.getExtrusionJunctions();
-                while (!to_junctions.empty() && !to_next_junctions.empty() && to_junctions.back().perimeter_index <= to_next_junctions.front().perimeter_index)
-                {
-                    to_junctions.pop_back();
+                auto to_next_junctions = edge_from_peak->next->twin->data.getExtrusionJunctions(true);
+                if(to_next_junctions && !to_next_junctions->empty()) {
+                    while (!to_junctions.empty() && to_junctions.back().perimeter_index <= to_next_junctions->front().perimeter_index)
+                    {
+                        to_junctions.pop_back();
+                    }
+                    to_junctions.reserve(to_junctions.size() + to_next_junctions->size());
+                    to_junctions.insert(to_junctions.end(), to_next_junctions->begin(), to_next_junctions->end());
                 }
-                to_junctions.reserve(to_junctions.size() + to_next_junctions.size());
-                to_junctions.insert(to_junctions.end(), to_next_junctions.begin(), to_next_junctions.end());
                 assert(!edge_from_peak->next->next);
                 if(edge_from_peak->next->next)
                 {
