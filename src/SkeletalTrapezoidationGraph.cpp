@@ -298,8 +298,11 @@ void SkeletalTrapezoidationGraph::collapseSmallEdges(coord_t snap_dist)
             quad_mid->prev->next = quad_mid->next;
             quad_mid->next->prev = quad_mid->prev;
             quad_mid->twin->next->prev = quad_mid->twin->prev;
-            quad_mid->twin->prev->next = quad_mid->twin->next;
-
+            if(quad_mid->twin->prev != nullptr) {
+                quad_mid->twin->prev->next = quad_mid->twin->next;
+            } else {
+                RUN_ONCE(logWarning("Encountered quad mid edge's twin without a prev."));
+            }
             safelyRemoveEdge(quad_mid->twin, edge_it, edge_it_is_updated);
             safelyRemoveEdge(quad_mid, edge_it, edge_it_is_updated);
         }
