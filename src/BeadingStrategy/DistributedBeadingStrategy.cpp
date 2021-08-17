@@ -96,6 +96,7 @@ DistributedBeadingStrategy::Beading DistributedBeadingStrategy::compute(coord_t 
 
 coord_t DistributedBeadingStrategy::getOptimalThickness(coord_t bead_count) const
 {
+    assert(bead_count * optimal_width != (bead_count + 1 ) * optimal_width);
     return bead_count * optimal_width;
 }
 

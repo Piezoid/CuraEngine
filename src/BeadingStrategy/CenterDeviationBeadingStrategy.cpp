@@ -30,6 +30,7 @@ CenterDeviationBeadingStrategy::Beading CenterDeviationBeadingStrategy::compute(
         const coord_t optimal_thickness = getOptimalThickness(bead_count);
         const coord_t diff_thickness = (thickness - optimal_thickness) / 2;
         const coord_t inner_bead_widths = optimal_width + diff_thickness;
+        assert(thickness < 1e20);
         assert(thickness > 0);
         assert(optimal_thickness > 0);
         assert(inner_bead_widths >= 0);
@@ -71,6 +72,7 @@ CenterDeviationBeadingStrategy::Beading CenterDeviationBeadingStrategy::compute(
 
 coord_t CenterDeviationBeadingStrategy::getOptimalThickness(coord_t bead_count) const
 {
+    assert(bead_count * optimal_width != (bead_count + 1 ) * optimal_width);
     return bead_count * optimal_width;
 }
 

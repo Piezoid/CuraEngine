@@ -110,6 +110,10 @@ public:
     void setTransitionEnds(std::shared_ptr<std::list<TransitionEnd>> storage)
     {
         transition_ends = storage;
+        for (const auto& transition_end : *storage) {
+            coord_t end_pos = transition_end.pos;
+            assert(end_pos < 1000000000 && end_pos > -10000000000);
+        }
     }
     std::shared_ptr<std::list<TransitionEnd>> getTransitionEnds()
     {

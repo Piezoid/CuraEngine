@@ -5,6 +5,7 @@
 #define UTILS_HALF_EDGE_NODE_H
 
 #include <list>
+#include <cassert>
 
 #include "IntPoint.h"
 
@@ -26,7 +27,10 @@ public:
     HalfEdgeNode(node_data_t data, Point p)
     : data(data)
     , p(p)
-    {}
+    {
+        assert(p.X < 1000000000);
+        assert(p.Y < 1000000000);
+    }
 
     bool operator==(const node_t& other)
     {

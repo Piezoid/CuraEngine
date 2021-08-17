@@ -4,6 +4,7 @@
 #include "OuterWallInsetBeadingStrategy.h"
 
 #include <algorithm>
+#include <cassert>
 
 namespace cura
 {
@@ -18,6 +19,7 @@ OuterWallInsetBeadingStrategy::OuterWallInsetBeadingStrategy(coord_t outer_wall_
 
 coord_t OuterWallInsetBeadingStrategy::getOptimalThickness(coord_t bead_count) const
 {
+    assert(parent->getOptimalThickness(bead_count) != parent->getOptimalThickness(bead_count+1));
     return parent->getOptimalThickness(bead_count);
 }
 

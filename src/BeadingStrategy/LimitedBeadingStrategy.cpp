@@ -95,8 +95,10 @@ coord_t LimitedBeadingStrategy::getOptimalThickness(coord_t bead_count) const
 {
     if (bead_count <= max_bead_count)
     {
+        assert(parent->getOptimalThickness(bead_count) !=parent->getOptimalThickness(bead_count+1));
         return parent->getOptimalThickness(bead_count);
     }
+    assert((bead_count <= max_bead_count) != (bead_count + 1 <= max_bead_count));
     return 10000000; // 10 meter
 }
 

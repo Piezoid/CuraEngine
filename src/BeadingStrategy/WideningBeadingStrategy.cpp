@@ -46,6 +46,7 @@ WideningBeadingStrategy::Beading WideningBeadingStrategy::compute(coord_t thickn
 
 coord_t WideningBeadingStrategy::getOptimalThickness(coord_t bead_count) const
 {
+    assert(parent->getOptimalThickness(bead_count) != parent->getOptimalThickness(bead_count+1));
     return parent->getOptimalThickness(bead_count);
 }
 

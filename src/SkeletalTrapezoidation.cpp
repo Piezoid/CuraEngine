@@ -783,12 +783,12 @@ void SkeletalTrapezoidation::generateTransitionMids(ptr_vector_t<std::list<Trans
             coord_t mid_R = beading_strategy.getTransitionThickness(transition_lower_bead_count) / 2;
             if (mid_R > end_R)
             {
-                RUN_ONCE(logError("transition on segment lies outside of segment!\n"));
+                RUN_ONCE(logError("transition on segment lies outside of segment! mid_R > end_R\n"));
                 mid_R = end_R;
             }
             if (mid_R < start_R)
             {
-                RUN_ONCE(logError("transition on segment lies outside of segment!\n"));
+                RUN_ONCE(logError("transition on segment lies outside of segment! mid_R < start_R\n"));
                 mid_R = start_R;
             }
             coord_t mid_pos = edge_size * (mid_R - start_R) / (end_R - start_R);
@@ -1148,10 +1148,12 @@ bool SkeletalTrapezoidation::generateTransitionEnd(edge_t& edge, coord_t start_p
         assert(pos <= ab_size);
         if (transitions->empty() || pos < transitions->front().pos)
         { // Preorder so that sorting later on is faster
+            assert(pos < 1000000000 && pos > -10000000000);
             transitions->emplace_front(pos, lower_bead_count, is_lower_end);
         }
         else
         {
+            assert(pos < 1000000000 && pos > -10000000000);
             transitions->emplace_back(pos, lower_bead_count, is_lower_end);
         }
         return false;
@@ -1233,6 +1235,7 @@ void SkeletalTrapezoidation::applyTransitions(ptr_vector_t<std::list<TransitionE
             auto& transition_ends = *edge.data.getTransitionEnds();
             for (TransitionEnd& end : twin_transition_ends)
             {
+                assert(length - end.pos > -10000000000 && length - end.pos < 10000000000);
                 transition_ends.emplace_back(length - end.pos, end.lower_bead_count, end.is_lower_end);
             }
             twin_transition_ends.clear();
@@ -1263,6 +1266,7 @@ void SkeletalTrapezoidation::applyTransitions(ptr_vector_t<std::list<TransitionE
         {
             coord_t new_node_bead_count = transition_end.is_lower_end? transition_end.lower_bead_count : transition_end.lower_bead_count + 1;
             coord_t end_pos = transition_end.pos;
+            assert(end_pos < 1000000000 && end_pos > -10000000000);
             node_t* close_node = (end_pos < ab_size / 2)? from : to;
             if ((end_pos < snap_dist || end_pos > ab_size - snap_dist)
                 && close_node->data.bead_count == new_node_bead_count

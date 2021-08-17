@@ -26,8 +26,12 @@ RedistributeBeadingStrategy::RedistributeBeadingStrategy(   const coord_t optima
 coord_t RedistributeBeadingStrategy::getOptimalThickness(coord_t bead_count) const
 {
     const coord_t inner_bead_count = bead_count > 2 ? bead_count - 2 : 0;
+    const coord_t inner_bead_count_p1 = bead_count + 1 > 2 ? bead_count + 1 - 2 : 0;
     const coord_t outer_bead_count = bead_count - inner_bead_count;
 
+    const coord_t outer_bead_count_p1 = bead_count - inner_bead_count;
+    assert(parent->getOptimalThickness(inner_bead_count) + optimal_width_outer * outer_bead_count
+          != parent->getOptimalThickness(inner_bead_count_p1) + optimal_width_outer * outer_bead_count_p1);
     return parent->getOptimalThickness(inner_bead_count) + optimal_width_outer * outer_bead_count;
 }
 
